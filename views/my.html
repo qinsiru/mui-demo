@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/my.css" rel="stylesheet" />
+    	<link rel="stylesheet" type="text/css" href="../font-icon/iconfont.css">
+		
+	</head>
+	<style>
+		#changeAccount{
+			position: absolute;
+			bottom: 0;
+		}
+	</style>
+
+	<body>
+		<div class="mui-content">
+			<ul class="mui-table-view colorbg">
+		        <li class="mui-table-view-cell mui-media">
+		            <a href="javascript:;">
+		                <div class="my-info mui-row">
+							<div class="mui-col-xs-3">
+							</div>
+							<div class="mui-col-xs-9">
+								<p>用户名 :<span id="username"></span></p>
+							</div>
+						</div>
+		            </a>
+		        </li>
+		    </ul>
+			
+		<ul class="mui-table-view mui-grid-view mui-grid-9" id="bgc">
+	        <li class="mui-table-view-cell mui-media mui-col-xs-4"><a href="#">
+	            <span class="mui-icon iconfont icon-shoucang col1"></span>
+	            <div class="mui-media-body">收藏</div></a></li>
+	        <li class="mui-table-view-cell mui-media  mui-col-xs-4"><a href="#">
+	            <span class="mui-icon iconfont icon-flower col2"></span>
+	            <div class="mui-media-body">评价</div></a></li>
+	        <li class="mui-table-view-cell mui-media  mui-col-xs-4"><a href="#">
+	            <span class="mui-icon iconfont icon-qingdan1 col3"></span>
+	            <div class="mui-media-body">清单</div></a></li>
+   		</ul>	
+   		 <ul class="mui-table-view mui-grid-view mui-grid-9 bgc1" >
+        <li class="mui-table-view-cell mui-media mui-col-xs-12">
+            <p class="left">我的资产</p></li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3"><a href="#">
+            <span class="mui-icon iconfont icon-wallet colorOrange"></span>
+            <div class="mui-media-body"><p class='mui-ellipsis'>我的钱包</p></div></a></li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3"><a href="#">
+            <span class="mui-icon iconfont icon-zichan colorOrange"></span>
+            <div class="mui-media-body"><p class='mui-ellipsis'>余额￥0.00</p></div></a></li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3"><a href="#">
+            <span class="mui-icon iconfont icon-iconvoucher colorOrange"></span>
+            <div class="mui-media-body"><p class='mui-ellipsis'>抵用券</p></div></a></li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-3 mui-col-sm-3"><a href="#">
+            <span class="mui-icon iconfont icon-qingdan colorOrange"></span>
+            <div class="mui-media-body"><p class='mui-ellipsis'>卡包</p></div></a></li>
+    	</ul>
+    	<br>
+		<button type="button" id="changeAccount" class="mui-btn mui-btn-danger mui-btn-block">切换账号</button>
+			
+		</div>
+		
+		
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript">
+			(function($, doc) {
+				$.init();
+				$.plusReady(function() {
+					doc.getElementById('username').innerText = plus.storage.getItem('username');
+					var login = null;
+					doc.getElementById('changeAccount').addEventListener('tap', () => {
+						if(login = plus.webview.getWebviewById('login')){
+							login.show();
+						} else {
+							//若login为空
+							login = plus.webview.create('login.html', 'login');
+							login.show('slide-in-bottom', 500);
+						}
+						plus.storage.removeItem('login');						
+					});
+				})
+			})(mui, document)
+		</script>
+	</body>
+
+</html>

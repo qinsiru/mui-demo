@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<title>Hello, World</title>
+
+		<style type="text/css">
+			html {
+				height: 100%
+			}
+			
+			body {
+				position: relative;
+				height: 100%;
+				margin: 0px;
+				padding: 0px
+			}
+			
+			#container {
+				height: 100%
+			}
+			
+			.search-input {
+				position: absolute;
+				top: -55px;
+				left: 0;
+				right: 0;
+				box-shadow: 0 2px 5px rgba(0, 0, 0, .5);
+				z-index: 99;
+				transition: top .5s;
+			}
+			
+			.mui-icon.map-btn {
+				position: absolute;
+				display: inline-block;
+				text-align: center;
+				font-size: 33px;
+				left: 20px;
+				box-shadow: 0 0 5px rgba(255, 255, 255, .4);
+				background: rgba(255, 255, 255, .8);
+				line-height: 50px;
+				width: 50px;
+				height: 50px;
+			}
+			
+			.mui-icon.search-submit {
+				position: absolute;
+				left: auto;
+				right: 0;
+				top: 8px;
+				border: none;
+				background: none;
+			}
+			
+			#search {
+				bottom: 110px;
+			}
+			
+			#location {
+				bottom: 50px;
+			}
+			
+			#search-input {
+				background: #FFFFFF;
+				height: 50px;
+				margin: 0;
+			}
+		</style>
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=NKGPkvyU2Th92UopznmYOijveFGvdO2s">
+			//v2.0版本的引用方式：src="http://api.map.baidu.com/api?v=2.0&ak=您的密钥"
+		</script>
+	</head>
+
+	<body>
+		<div id="container"></div>
+		<div class="search-input">
+			<input type="text" id="search-input" placeholder="search?">
+			<button type='submit' class='mui-icon mui-icon-search search-submit'></button>
+		</div>
+
+		<a href="javascript:void(0)" class='mui-icon mui-icon-search map-btn' id='search'></a>
+		<a href="javascript:void(0)" class='mui-icon mui-icon-location map-btn' id='location'></a>
+
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function() {
+				document.getElementById('search-input').addEventListener('focus', function() {
+					plus.webview.currentWebview().setStyle({
+						bottom: '0px'
+					});
+				});
+				document.getElementById('search-input').addEventListener('blur', function() {
+					plus.webview.currentWebview().setStyle({
+						bottom: '51px'
+					});
+				});
+			})
+			var map = new BMap.Map("container");
+			var mark,point;//全局变量
+			// 创建地图实例  
+			//var point = new BMap.Point(112.98116032, 28.19946052);
+			// 创建点坐标  			
+			//map.centerAndZoom(point, 15);
+			// 初始化地图，设置中心点坐标和地图级别  ，放大的倍数 15倍
+			//实例化原型
+			var geolocation = new BMap.Geolocation();
+			//			geolocation.getCurrentPosition(function(参数1,参数2){
+			//				showPosition(参数1,参数2);//回调函数传参
+			//			});
+			geolocation.getCurrentPosition(function(r) {
+				if(this.getStatus() == BMAP_STATUS_SUCCESS) {
+					//					var jing = r.point.lng,
+					//						wei = r.point.lat;
+					//					console.log(r.point.lng);
+					//					console.log(r.point.lat);
+					var point = new BMap.Point(r.point.lng, r.point.lat);
+					// 创建点坐标  			
+					map.centerAndZoom(point, 15);
+					// 初始化地图，设置中心点坐标和地图级别  
+					//					if(!mark) {
+					//						mark = new BMap.Marker(r.point);
+					//					}
+					//var mark = new BMap.Marker(r.point);
+					//					map.addOverlay(mark);
+					//					map.panTo(r.point); //移动
+				}
+			});
+
+			document.getElementById('location').addEventListener('tap', function() {
+				geolocation.getCurrentPosition(function(r) { //回调函数
+					if(this.getStatus() == BMAP_STATUS_SUCCESS) {
+						point = new BMap.Point(r.point.lng, r.point.lat);
+						// 创建点坐标  			
+						map.centerAndZoom(point, 18);
+						// 初始化地图，设置中心点坐标和地图级别  
+						if(!mark) {
+							mark = new BMap.Marker(r.point);
+						}
+						map.addOverlay(mark);
+						map.panTo(r.point); //移动
+					}
+				}, {
+					enableHighAccuracy: true,
+					maximumAge: 0
+				});
+			});
+			document.getElementById('search').addEventListener('tap', function() {
+				mui('.search-input')[0].style.top = '5px';
+			});
+
+			mui('.search-submit')[0].addEventListener('tap', function() {
+				//对接搜索框  本地搜索
+				var searchString = document.getElementById('search-input').value;
+					//center = map.getCenter();
+				var localsearch = new BMap.LocalSearch(map, {
+					renderOptions: {map: map}
+				});
+				//清除最近一次检索的结果
+				localsearch.clearResults();
+				map.clearOverlays();
+				//附近搜索searchNearby
+				localsearch.searchNearby(searchString, point, 500);
+				//				localsearch.search(searchString, {
+				//					forceLocal: true
+				//				})
+				
+			});
+
+			//			if(navigator.geolocation){//navigator window对象下的  可以直接用
+			//				//console.log(123);
+			//				navigator.geolocation.getCurrentPosition(showPosition);
+			//				
+			//			}else{
+			//				$.alert('你的浏览器不支持定位！');
+			//			}
+			//			function showPosition(position){
+			//				var jing = position.coords.longitude,
+			//					wei = position.coords.latitude;
+			//				console.log(position.coords.longitude);//经度
+			//				console.log(position.coords.latitude);//纬度
+			//				var point = new BMap.Point(jing, wei);
+			//				map.centerAndZoom(point, 16);
+			//			}
+		</script>
+	</body>
+
+</html>

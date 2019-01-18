@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+	</head>
+
+	<body>
+	<!--header-->	
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">Coffee</h1>
+		</header>
+		
+	<!--底部-->
+		<nav class="mui-bar mui-bar-tab" id='buttom-tabs'>
+			<a class="mui-tab-item mui-active">
+				<span class="mui-icon mui-icon-home"></span>
+				<span class="mui-tab-label">首页</span>
+			</a>
+			<a class="mui-tab-item">
+				<span class="mui-icon mui-icon-map"></span>
+				<span class="mui-tab-label">附近</span>
+			</a>
+			<a class="mui-tab-item">
+				<span class="mui-icon mui-icon-camera"></span>
+				<span class="mui-tab-label">相册</span>
+			</a>
+			<a class="mui-tab-item">
+				<span class="mui-icon mui-icon-gear"></span>
+				<span class="mui-tab-label">设置</span>
+			</a>
+		</nav>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			(function($, doc) {
+				$.init();
+
+				var subpages = ['views/home.html', 'views/news.html', 'views/discover.html', 'views/my.html'],
+					styles = {
+						top: '46px',
+						bottom: '51px'
+					},
+					tabs = $('.mui-tab-item');
+
+				var reg = /\w+\/(\w+)\.html$/;
+
+				$.plusReady(function() {
+					//0.给底部导航设置top值，以防输入法挤压
+					var appHeight = plus.display.resolutionHeight-50;//屏幕高度-50
+					console.log(appHeight);
+					$('#buttom-tabs')[0].style.top = appHeight+'px';
+					//1. 检查是否登录
+//					var indexWV = plus.webview.currentWebview();
+//					console.log(indexWV.id);
+					
+					initViews();
+					if(!plus.storage.getItem('login')) {
+						//2. 若无登录，弹出登录页面
+						var loginVW = plus.webview.create('views/login.html', 'login');
+						loginVW.show('slide-in-bottom', 500);
+					}
+				});
+
+				function initViews() {
+					var curr = plus.webview.currentWebview(),//currentWebview：获取当前窗口的WebviewObject对象
+						subVW = [];	
+					for(var i = 0, len = subpages.length; i < len; i++) {
+						var sub = plus.webview.create(subpages[i], subpages[i].replace(reg, '$1'), styles);
+						subVW.push(sub);
+						curr.append(sub);
+						sub.hide();
+					}
+					subVW[0].show();
+
+					for(var i = 0, len = tabs.length; i < len; i++) {
+						(function(i) {
+							tabs[i].addEventListener('tap', function() {
+								$.each(subVW, function(i, e) {
+									e.hide();
+								});
+								subVW[i].show();
+							});
+						})(i);
+					}
+				}
+			})(mui, document);
+			
+		</script>
+	</body>
+
+</html>

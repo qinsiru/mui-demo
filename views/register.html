@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">注册</h1>
+		</header>
+		<div class="mui-content">
+			<form class="mui-input-group">
+				<div class="mui-input-row">
+					<label>用户名</label>
+					<input type="text" id="username" class="mui-input-clear" placeholder="用户名">
+				</div>
+				<div class="mui-input-row">
+					<label>密码</label>
+					<input type="password" id="password" class="mui-input-password" placeholder="密码">
+				</div>
+				<div class="mui-input-row">
+					<label>确认密码</label>
+					<input type="password" id="pwdAgain" class="mui-input-password" placeholder="确认密码">
+				</div>
+				<button type="button" id="regBtn" class="mui-btn mui-btn-blue mui-btn-block">注册</button>
+			</form>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/md5.min.js"></script>
+		<script type="text/javascript">
+			(function($, doc) {
+					$.init();
+
+					$.plusReady(function() {
+						var usr = doc.getElementById('username'),
+							pwd = doc.getElementById('password'),
+							pwdAgain = doc.getElementById('pwdAgain');
+
+						doc.getElementById('regBtn').addEventListener('tap', function() {
+							// 1. 检测用户填写信息
+							var usrLen = usr.value.length,
+								pwdLen = pwd.value.length,
+								pwdALen = pwdAgain.value.length;
+							if(usrLen < 3 || usrLen > 12) {
+								$.alert('用户名长度在3-12位之间', 'Error!', '我知道了');
+								return;
+							}
+							if(pwdLen < 3 || pwdLen > 12) {
+								$.alert('密码长度在3-12位之间', 'Error!', '我知道了');
+								return;
+							}
+							if(pwdAgain.value != password.value) {
+								$.alert('两次输入的密码不一致', 'Error!', '我知道了');
+								return;
+							}
+
+							$.ajax('http://plrabbit.com/face/register.php', {
+								data: {
+									username: usr.value,
+									password: md5(pwd.value)
+								},
+								type: "post",
+								dataType: 'json',
+								success: function(data) {
+									if(data.register == 'repeated'){
+										plus.nativeUI.toast('用户已存在');
+										return;
+									}
+									if(data.register == 'success'){
+										plus.nativeUI.toast('注册成功');
+										plus.storage.setItem('usrID', data.id);
+										plus.storage.setItem('username', usr.value);
+										plus.storage.setItem('login', 'yes');
+										plus.webview.getWebviewById('my').reload();
+										plus.webview.close('login', 'slide-out-bottom');
+									}
+								},
+								timeout: 5000,
+								error: function(xhr, type) {
+									plus.nativeUI.toast('诶呀！网络开小差了！');
+								}
+							})
+						});
+					
+					});
+				})(mui, document);
+		</script>
+	</body>
+
+</html>

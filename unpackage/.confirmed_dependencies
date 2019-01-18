@@ -1,0 +1,41 @@
+{
+	"index.html": {
+		"resources": [
+			"views/home.html",
+			"js/mui.min.js",
+			"fonts/mui.ttf"
+		],
+		"refer": [
+			"views/home.html",
+			"views/news.html",
+			"views/my.html",
+			"views/discover.html",
+			"views/login.html"
+		]
+	},
+	"views/my.html": {
+		"refer": [
+			"views/login.html"
+		]
+	},
+	"views/login.html": {
+		"refer": [
+			"views/register.html"
+		],
+		"resources": [
+			"images/ferrisWheel-xs.png",
+			"images/pole.png"
+		]
+	},
+	"views/discover.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css"
+		]
+	},
+	"views/register.html": {
+		"refer": [
+			"views/login.html"
+		]
+	}
+}

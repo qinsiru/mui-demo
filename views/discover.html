@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="../js/mui.min.js"></script>
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style>
+			img {
+				width: 100%;
+			}
+			
+			#start-upload {
+				display: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class='mui-content'>
+			<a href="javascript:void(0)" id='imgUpload' class='mui-btn mui-btn-warning'>上传照片</a>
+			<a href="javascript:void(0)" id='start-upload' class='mui-btn mui-btn-blue'>开始上传</a>
+			<a href="javascript:void(0)" id='upload-clear' class='mui-btn mui-btn-danger'>清除缓存</a>
+			<img src="" id="faceImg" />
+			<div id='img1'></div>
+			<div id='img2'></div>
+		</div>
+		<script src='../js/mui.min.js'></script>
+		<script type="text/javascript">
+			(function($, doc) {
+				$.init();
+
+				$.plusReady(function() {
+					doc.getElementById('imgUpload').addEventListener('tap', function() {
+						plus.nativeUI.actionSheet({
+							title: 'ready',
+							cancel: '取消',
+							buttons: [{
+								title: '拍摄',
+								style: 'default'
+							}, {
+								title: '从相册选择',
+								style: 'default'
+							}]
+						}, function(e) {
+							if(e.index == 2) { //选择从相册选择则执行chooseGallery函数
+								chooseGallery();
+							} else if(e.index == 1) { //选择从相册选择则执行chooseGallery函数
+								chooseCamera();
+							}
+						});
+					});
+
+					doc.getElementById('start-upload').addEventListener('tap', function() {
+						var url, tsrc;
+						var src = faceImg.getAttribute('src');
+						if(src) {
+							if(tsrc && tsrc == src && url) {
+								return;
+							} else {
+								tsrc = src;
+								uploadImg({
+									url: 'http://plrabbit.com/face/imageFile.php',
+									filepath: src,
+									datas: [{
+										key: 'key',
+										value: src
+									}],
+									success: function(t) {
+										console.log(t.responseText);
+										var img = JSON.parse(t.responseText);
+										if(plus.storage.getItem('img1')) {
+											plus.storage.setItem('img2',
+												'http://plrabbit.com/face/' + img.file);
+											doc.getElementById('img2').innerText = plus.storage.getItem('img2');
+										} else {
+											plus.storage.setItem('img1',
+												'http://plrabbit.com/face/' + img.file);
+											doc.getElementById('img2').innerText = plus.storage.getItem('img2');
+										}
+									},
+									failed: function(s) {
+										console.log('上传文件失败' + s);
+									}
+								});
+							}
+						} else {
+							$.alert('请先选择照片', '未检测到图片', '确定')
+						}
+					});
+
+					doc.getElementById('upload-clear').addEventListener('tap', function() {
+						plus.storage.removeItem('img1');
+						plus.storage.removeItem('img2');
+						$.alert('清除成功');
+					})
+
+				});
+
+				function chooseCamera() {
+					var cmr = plus.camera.getCamera();
+					cmr.captureImage(function(p) {
+						plus.io.resolveLocalFileSystemURL(p, function(entry) {
+							faceImg.setAttribute('src', entry.toLocalURL());
+							doc.getElementById('start-upload').style.display = 'inline-block';
+						}, function(e) {});
+					}, function(e) {}, {
+						index: 1,
+						filename: '_doc/camera/'
+					});
+				}
+
+				function chooseGallery() {
+					plus.gallery.pick(function(path) {
+						faceImg.setAttribute('src', path);
+						doc.getElementById('start-upload').style.display = 'inline-block';
+					}, function() {}, {
+						filter: 'image'
+					})
+				}
+
+				function uploadImg(options) {
+					if(!options) return;
+					var url = options.url,
+						filepath = options.filepath,
+						datas = options.datas || [],
+						success = options.success,
+						failed = options.failed;
+
+					if(url && filepath) {
+						//1024字节等于1kb
+						var task = plus.uploader.createUpload(url, {
+							method: 'POST',
+							blocksize: 204800, //上传任务每次上传的文件块大小
+							priority: 100, //优先级
+						}, function(t, status) {
+							if(status == 200) {
+								if(success) success(t);
+							} else {
+								if(failed) failed(status);
+							}
+						});
+
+						task.addFile(filepath, {
+							key: 'file'
+						});
+						if(datas && datas.length) { //空数组返回真
+							for(var i = 0; i < datas.length; i++) {
+								var data = datas[i];
+								task.addData(data.Key, data.value);
+							}
+						}
+
+						task.start();
+					}
+				}
+			})(mui, document);
+		</script>
+
+</html>

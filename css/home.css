@@ -1,0 +1,93 @@
+.bg1{
+	background: #ff8822;
+}
+.bg2{
+	background: #ff6644;
+}
+.bg3{
+	background: #7788ff;
+}
+.bg4{
+	background: #ffbb55;
+}
+.bg5{
+	background: #44ddbb;
+}
+.bg6{
+	background: #66ccee;
+}
+#bgc{
+	background: white;
+	border:0;
+	border-bottom:1px solid #f2f2f2;
+}
+#bgc > li{
+	border:0;
+}
+.colorWhite {
+	color:white;
+}
+.icon-dianying {
+	width: 20px;
+	height: 20px;
+	margin-left: -10px;
+}
+#nav {
+	background: white !important;
+}
+
+.bgc1{
+	background: white!important;
+	border:0;
+	border-bottom:2px solid #f2f2f2;
+	margin: 10px 0;
+}
+.bg1, .bg2, .bg3, .bg4, .bg5, .bg6 {
+    border-radius: 50%;
+    width: 46px;
+    height: 46px;
+    margin: 0 auto;
+    line-height: 46px;
+    padding-top: 3px;
+    }
+	.mui-media-body.pcent{
+		position: absolute;
+		margin: auto;
+	}
+	.mui-ellipsis.mui-c {
+		text-align: center;
+		
+	}
+
+
+
+
+
+.mui-font1{
+    font-size: 16px;
+    font-family: Sans-serif;
+    margin-right: 135px;
+    font-weight: bold;
+    color:#EF5732;
+}
+
+.muibg{
+    background: white;
+    border:1px solid #f2f2f2;
+}
+
+.muiview{
+    margin-top: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+

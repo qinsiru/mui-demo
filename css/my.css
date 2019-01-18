@@ -1,0 +1,44 @@
+.imgbg{
+    border-radius:50%;
+    max-width:48px;
+    height:48px;
+}
+.col1{
+	color: #ff8822;
+}
+.col2{
+	color: #ff6644;
+}
+.col3{
+	color: #7788ff;
+}
+.mui-content > .mui-table-view:first-child{
+    margin-top: 0;
+}
+.colorOrange {
+	color:orange;
+}
+.mui-icon-gear:before{
+    color: white;
+}
+
+.icon-shoucang:before{
+    height: 28px;
+}
+.mui-icon .iconfont{
+    width: 33px;
+    height: 33px;
+}
+.colorbg{
+    background: #91a8d0;
+    margin-top: 22px;
+    height: 77px;
+}
+
+.left{
+    text-align:left;
+}
+
+.iconfont{
+    font-size: 16px;
+}
